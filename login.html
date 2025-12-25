@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login System</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #2b52ff 50%, #ff9a9e 100%);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 20px; /* Padding luar agar tidak mentok layar HP */
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        img.logo {
+            width: 280px;
+            height: auto;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 100%; /* Agar logo tidak melebihi lebar layar HP */
+        }
+
+        h2 { font-weight: 400; margin-bottom: 5px; }
+        p.time { font-size: 15px; margin-bottom: 30px; opacity: 0.8; }
+
+        input {
+            width: 100%;
+            padding: 15px; /* Padding lebih besar untuk sentuhan jari */
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            outline: none;
+            font-size: 16px; /* Font size 16px mencegah zoom otomatis di iPhone */
+        }
+        input::placeholder { color: rgba(255,255,255,0.7); }
+        input:focus { background: rgba(255,255,255,0.2); }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 8px;
+            background: #2b52ff;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 16px;
+        }
+        button:hover { background: #1a3bccc9; }
+        .error { color: #ff6b6b; font-size: 13px; margin-bottom: 10px; }
+
+        /* --- TAMPILAN KHUSUS HP --- */
+        @media (max-width: 600px) {
+            .login-box { padding: 30px 20px; }
+            img.logo { width: 200px; } /* Logo mengecil di HP */
+            h2 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="Logo">
+
+        <h2 Refleksi Visual Knowledge dan Knowhow</h2>
+        <p class="time"> {{ time }}</p>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">LOGIN</button>
+        </form>
+    </div>
+</body>
+</html>

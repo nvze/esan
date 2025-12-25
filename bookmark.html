@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NVZE Bookmark</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            /* Background tetap sama */
+            background: linear-gradient(135deg, #ff9a9e 0%, #2b52ff 17.5%, #2b52ff 82.5%, #ff9a9e 100%);
+            background-attachment: fixed;
+
+            /* FIXED LAYOUT (Satu Layar Penuh) */
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            padding: 20px;
+        }
+
+        /* HEADER SECTION */
+        .header-section {
+            flex-shrink: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .header-row {
+            display: flex; flex-direction: row; align-items: center; justify-content: center;
+            gap: 40px; width: 100%; max-width: 1000px; margin-top: 10px; margin-bottom: 10px; flex-wrap: wrap;
+        }
+
+        .logo-text {
+            font-family: 'Montserrat Bold', sans-serif; font-weight: 900; font-size: 32px;
+            color: #ffffff; margin: 0; letter-spacing: -2px; text-transform: none;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+            background: -webkit-linear-gradient(#fff, #e0e0e0); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+
+        }
+
+        .search-container-small { position: relative; width: 300px; }
+
+        .search-input {
+            width: 100%; padding: 10px 20px; border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.4); background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px); color: white; font-size: 14px; outline: none; transition: 0.3s;
+        }
+        .search-input::placeholder { color: rgba(255, 255, 255, 0.8); }
+        .search-input:focus { background: rgba(255, 255, 255, 0.25); box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); width: 100%; border-color: white; }
+
+        .datetime {
+            font-size: 14px; margin-bottom: 10px; opacity: 1; font-weight: 700;
+            letter-spacing: 1px; color: #ff9a9e; text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+        }
+
+        /* GRID WRAPPER (Scrollable Area) */
+        .grid-wrapper {
+            flex-grow: 1;
+            width: 100%;
+            max-width: 1200px;
+            overflow-y: auto;
+            padding: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.1);
+        }
+
+        .grid-wrapper::-webkit-scrollbar { width: 6px; }
+        .grid-wrapper::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 3px; }
+        .grid-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.4); border-radius: 3px; }
+        .grid-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.6); }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+            width: 100%;
+            align-content: start;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px; overflow: hidden; transition: transform 0.3s ease;
+        }
+
+        .category-card:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.4); }
+
+        .card-header {
+            padding: 12px 15px; display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; font-weight: 600; font-size: 15px; color: white; transition: color 0.3s, background 0.3s;
+        }
+        .card-header.active { color: #ff9a9e; background: rgba(0, 0, 0, 0.1); }
+
+        .title-area { display: flex; align-items: center; gap: 10px; }
+
+        .card-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; background: rgba(0, 0, 0, 0.1); }
+        .card-body ul { list-style: none; padding: 0; margin: 0; }
+        .card-body li { border-top: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.5s; }
+        .card-body a {
+            display: block; padding: 10px 15px; color: rgba(255, 255, 255, 0.9);
+            text-decoration: none; font-size: 13px; transition: 0.2s;
+        }
+        .card-body a:hover { background: rgba(255, 255, 255, 0.1); color: white; padding-left: 20px; }
+
+        /* FOOTER SECTION */
+        .footer-nav {
+            flex-shrink: 0;
+            margin-top: 10px;
+            display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;
+        }
+        .btn-glass {
+            padding: 10px 20px; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px; color: white; text-decoration: none; font-size: 13px; transition: 0.3s;
+            backdrop-filter: blur(5px); width: 220px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-glass:hover { background: rgba(255, 255, 255, 0.3); }
+        .btn-back { background: rgba(0, 0, 0, 0.2); }
+        .btn-back:hover { background: rgba(0, 0, 0, 0.4); }
+
+        .copyright { flex-shrink: 0; margin-top: 15px; font-size: 11px; color: rgba(255, 255, 255, 0.6); text-align: center; }
+        .fa-chevron-down { transition: transform 0.3s; }
+        .active .fa-chevron-down { transform: rotate(180deg); }
+    </style>
+</head>
+<body>
+
+    <div class="header-section">
+        <div class="header-row">
+            <h1 class="logo-text">esvn system</h1>
+            <div class="search-container-small">
+                <input type="text" class="search-input" id="searchInput" placeholder="Cari..." onkeyup="filterBookmarks()">
+            </div>
+        </div>
+        <div class="datetime" id="clock"></div>
+    </div>
+
+    <div class="grid-wrapper">
+        <div class="grid-container" id="bookmarkGrid">
+            {% for kategori, links in bookmarks.items() %}
+            <div class="category-card">
+                <div class="card-header" onclick="toggleCard(this)">
+                    <div class="title-area">
+                        <i class="fa-solid fa-folder category-icon" data-cat="{{ kategori.lower() }}"></i>
+                        <span>{{ kategori }}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        {% for item in links %}
+                        <li>
+                            <a href="{{ item.link }}" target="_blank" onclick="moveLinkToTop(this, '{{ kategori }}', '{{ item.link }}')">
+                                <i class="fa-solid fa-link" style="margin-right: 10px; font-size: 12px;"></i>
+                                {{ item.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="footer-nav">
+        <a href="{{ url_for('input_page') }}" class="btn-glass"><i class="fa-solid fa-plus"></i> Tambah Data</a>
+        <a href="https://nvze.github.io/dashboard/index.html" class="btn-glass btn-back"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</a>
+    </div>
+
+    <div class="copyright">&copy; 2025 NVZE System</div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('clock').innerText = now.toLocaleDateString('id-ID', options).replace(/\./g, ':');
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- BACKEND SYNC ---
+        // Fungsi untuk mengirim data ke Python agar disimpan permanen
+        function sendUpdateToBackend(type, category, link = null) {
+            fetch('/move_top', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: type, category: category, link: link })
+            }).then(response => console.log("Saved order to backend"))
+              .catch(err => console.error("Error saving order", err));
+        }
+
+        // --- TOGGLE CARD & MOVE CATEGORY TO TOP ---
+        function toggleCard(header) {
+            var body = header.nextElementSibling;
+            var card = header.parentElement; // Element Kartu (category-card)
+            var gridContainer = document.getElementById('bookmarkGrid'); // Container Grid
+
+            // Logika Accordion: Tutup panel lain yang sedang terbuka
+            var allBodies = document.querySelectorAll('.card-body');
+            var allHeaders = document.querySelectorAll('.card-header');
+
+            allBodies.forEach(function(b) { if (b !== body) b.style.maxHeight = null; });
+            allHeaders.forEach(function(h) { if (h !== header) h.classList.remove("active"); });
+
+            // Toggle panel yang diklik
+            header.classList.toggle("active");
+
+            if (body.style.maxHeight) {
+                // --- KONDISI: KARTU DITUTUP (CLOSED) ---
+                body.style.maxHeight = null;
+
+                // 1. Pindahkan visual kartu ke urutan pertama
+                // Cek apakah kartu sudah di posisi pertama, jika belum, pindahkan.
+                if (gridContainer.firstElementChild !== card) {
+                    gridContainer.prepend(card);
+
+                    // Efek visual highlight sebentar (opsional)
+                    card.style.transition = "background 0.5s";
+                    card.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
+                    setTimeout(() => { card.style.backgroundColor = ""; }, 500);
+                }
+
+                // 2. Kirim update ke Backend agar permanen (Pyhton)
+                var categoryName = header.querySelector('.title-area span').innerText.trim();
+                sendUpdateToBackend('category', categoryName);
+
+            } else {
+                // --- KONDISI: KARTU DIBUKA (OPENED) ---
+                body.style.maxHeight = body.scrollHeight + "px";
+            }
+        }
+
+        // --- MOVE LINK (TETAP JALAN UNTUK LINK) ---
+        function moveLinkToTop(linkElement, categoryName, linkUrl) {
+            var li = linkElement.parentElement;
+            var ul = li.parentElement;
+
+            // Pindahkan Link di dalam List
+            if (ul.firstElementChild !== li) {
+                ul.prepend(li);
+                li.style.backgroundColor = "rgba(255, 154, 158, 0.4)";
+                setTimeout(() => { li.style.backgroundColor = ""; }, 500);
+
+                // Kirim update link ke backend
+                sendUpdateToBackend('link', categoryName, linkUrl);
+            }
+        }
+
+        function filterBookmarks() {
+            var input = document.getElementById('searchInput');
+            var filter = input.value.toUpperCase();
+            var cards = document.getElementsByClassName('category-card');
+
+            for (var i = 0; i < cards.length; i++) {
+                var card = cards[i];
+                var header = card.getElementsByClassName("card-header")[0];
+                var body = card.getElementsByClassName("card-body")[0];
+                var titleText = header.innerText;
+                var bodyText = body.innerText;
+
+                if (filter === "") {
+                    card.style.display = ""; body.style.maxHeight = null; header.classList.remove("active");
+                } else {
+                    if (titleText.toUpperCase().indexOf(filter) > -1 || bodyText.toUpperCase().indexOf(filter) > -1) {
+                        card.style.display = ""; body.style.maxHeight = body.scrollHeight + "px"; header.classList.add("active");
+                    } else {
+                        card.style.display = "none"; body.style.maxHeight = null; header.classList.remove("active");
+                    }
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const icons = document.querySelectorAll('.category-icon');
+            icons.forEach(icon => {
+                const cat = icon.getAttribute('data-cat');
+                if (cat) {
+                    if (cat.includes('mail') || cat.includes('surat')) icon.className = "fa-solid fa-envelope";
+                    else if (cat.includes('finance') || cat.includes('keuangan') || cat.includes('trading')) icon.className = "fa-solid fa-chart-line";
+                    else if (cat.includes('chat') || cat.includes('sosmed')) icon.className = "fa-solid fa-comments";
+                    else if (cat.includes('cloud') || cat.includes('drive')) icon.className = "fa-solid fa-cloud";
+                    else if (cat.includes('ai') || cat.includes('bot')) icon.className = "fa-solid fa-robot";
+                    else if (cat.includes('video') || cat.includes('hiburan')) icon.className = "fa-solid fa-film";
+                    else if (cat.includes('office') || cat.includes('doc')) icon.className = "fa-solid fa-file-word";
+                    else if (cat.includes('tools') || cat.includes('system')) icon.className = "fa-solid fa-wrench";
+                    else icon.className = "fa-solid fa-folder-open";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
