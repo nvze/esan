@@ -1,0 +1,4 @@
+Ini adalah postingan pertama saya.
+Hari ini tanggal 25 Desember 2025, Merry Christmas!
+
+Konten bisa panjang, baris baru akan jadi <br>.
