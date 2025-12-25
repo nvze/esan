@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Blog</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header><h1 id="post-title"></h1></header>
+    <main><div id="post-content" class="post"></div></main>
+    <a href="index.html">Kembali</a>
+    <script>
+        // Ambil slug dari URL
+        const params = new URLSearchParams(window.location.search);
+        const slug = params.get('slug');
+        
+        // Mapping slug ke file (hardcode sederhana)
+        const postFiles = {
+            post1: "posts/post1.txt",
+            post2: "posts/post2.txt"
+            // Tambah di sini
+        };
+        
+        if (postFiles[slug]) {
+            fetch(postFiles[slug])
+                .then(response => response.text())
+                .then(text => {
+                    document.getElementById('post-title').textContent = slug.replace('-', ' ').toUpperCase();
+                    document.getElementById('post-content').innerHTML = text.replace(/\n/g, '<br>');
+                });
+        }
+    </script>
+</body>
+</html>
